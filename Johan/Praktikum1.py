@@ -9,7 +9,7 @@ def printNumberFrom1To100():
         print(i)
 
 def fibunacci(n):
-    a = [0]*100
+    a = [0]*(n+4)
     a[0] = 1
     a[1] = 1
     print(0)
@@ -19,4 +19,17 @@ def fibunacci(n):
         a[i] = a[i-1]+a[i-2]
         print(a[i])
 
-fibunacci(10)
+# fibunacci(10)
+
+imgCol = cv2.imread('Utils\LenaJPEG.jpg')
+
+width, height, depth = imgCol.shape
+
+for y in range(height):
+    for x in range(width):
+        imgCol[y][x] = pow(imgCol[y][x]/255, 1/2) * 255
+
+
+cv2.imshow("img", imgCol)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
