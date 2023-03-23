@@ -30,6 +30,7 @@ for y in range(height):
         imgCol[y][x] = pow(imgCol[y][x]/255, 1/2) * 255
 
 
+
 cv2.imshow("img", imgCol)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
