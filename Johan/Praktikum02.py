@@ -54,7 +54,7 @@ def autoContrast(img):
     tmp = getHistogramm(img)[getPercentage(img, 0.05):getPercentage(img, 1-0.05)]
     for y in range(height):
         for x in range(width):
-            a = 1
+            a = 2
 
 def getPercentage(img, schwellwert):
     H = getCumulatedHistogramm(img)
