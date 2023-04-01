@@ -36,21 +36,6 @@ def getCumulatedHistogramm(img):
             H[i] += h[j]
     return H
 
-def getCumulatedHistogrammRekursiv(img):
-    H = np.zeros(256)
-    h = getNormHistogramm(img)
-    H = recursiv(H, h, 256)
-    return H
-
-def recursiv(H, h, i):
-    if i == 0:
-        H[i] = 0
-    if 0 < i < 255:
-        H[i] = recursiv(h, i-1)+h[i]
-    return H
- 
-
-
 def linearContrast(img, t0, t1):
     toRet = np.zeros((height, width))
     for y in range(height):
