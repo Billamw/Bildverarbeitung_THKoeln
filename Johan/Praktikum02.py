@@ -99,9 +99,9 @@ def getBinary(img=[], schwellwert=125):
 # plt.plot(getHistogramm(img_autoCon))
 # plt.show()
 
-# cv2.imshow("img", getBinary(imgCol, 125))
+cv2.imshow("img", getBinary(imgCol, getMedianOfHistogramm(imgCol)))
 
-cv2.imshow("img", imgCol)
+# cv2.imshow("img", imgCol)
 # cv2.imshow("img", linearContrast(imgCol, 0, 255))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
