@@ -23,42 +23,42 @@ imgCol = cv2.resize(imgCol, dim, interpolation = cv2.INTER_AREA)
 original = cv2.resize(original, dim, interpolation = cv2.INTER_AREA)
 
 colors = [
-  (255, 0, 0),   # Rot
-  (0, 255, 0),   # Grün
-  (0, 0, 255),   # Blau
-  (255, 255, 0), # Gelb
-  (255, 0, 255), # Magenta
-  (0, 255, 255), # Cyan
-  (128, 0, 0),   # Dunkelrot
-  (0, 128, 0),   # Dunkelgrün
-  (0, 0, 128),   # Dunkelblau
-  (128, 128, 0), # Dunkelgelb
-  (128, 0, 128), # Dunkelmagenta
-  (0, 128, 128), # Dunkelcyan
-  (192, 192, 192), # Hellgrau
-  (128, 128, 128), # Grau
-  #(255, 255, 255), # Weiß
-  #(0, 0, 0),     # Schwarz
-  (255, 128, 128), # Hellrot
-  (128, 255, 128), # Hellgrün
-  (128, 128, 255), # Hellblau
-  (255, 255, 128), # Hellgelb
-  (255, 128, 255), # Hellmagenta
-  (128, 255, 255), # Hellcyan
-  (255, 0, 128),   # Pink
-  (128, 255, 0),   # Limette
-  (0, 128, 255),   # Himmelblau
-  (255, 128, 0),   # Orange
-  (128, 0, 255),   # Lila
-  (0, 255, 128),   # Türkis
-  (255, 128, 64),  # Pfirsich
-  (64, 255, 128),  # Limonengrün
-  (128, 64, 255),  # Violett
+  [255, 0, 0],   # Rot
+  [0, 255, 0],   # Grün
+  [0, 0, 255],   # Blau
+  [255, 255, 0], # Gelb
+  [255, 0, 255], # Magenta
+  [0, 255, 255], # Cyan
+  [128, 0, 0],   # Dunkelrot
+  [0, 128, 0],   # Dunkelgrün
+  [0, 0, 128],   # Dunkelblau
+  [128, 128, 0], # Dunkelgelb
+  [128, 0, 128], # Dunkelmagenta
+  [0, 128, 128], # Dunkelcyan
+  [192, 192, 192], # Hellgrau
+  #[128, 128, 128], # Grau
+  #[255, 255, 255], # Weiß
+  #[0, 0, 0],     # Schwarz
+  [255, 128, 128], # Hellrot
+  [128, 255, 128], # Hellgrün
+  [128, 128, 255], # Hellblau
+  [255, 255, 128], # Hellgelb
+  [255, 128, 255], # Hellmagenta
+  [128, 255, 255], # Hellcyan
+  [255, 0, 128],   # Pink
+  [128, 255, 0],   # Limette
+  [0, 128, 255],   # Himmelblau
+  [255, 128, 0],   # Orange
+  [128, 0, 255],   # Lila
+  [0, 255, 128],   # Türkis
+  [255, 128, 64],  # Pfirsich
+  [64, 255, 128],  # Limonengrün
+  [128, 64, 255],  # Violett
 ]
 
-# cv2.imshow("img", imgCol)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+# cv2.imshow["img", imgCol)
+# cv2.waitKey[0)
+# cv2.destroyAllWindows[)
 
 def showPicture(name, img):
     cv2.imshow(name, img)
@@ -237,6 +237,9 @@ def segmentation(img):
                 
                 result = floodFill(img, x, y, label)
                 label+=1
+                print(label, "\t:", colors[label])
+
+    print(label)
     return result
 
 def floodFill(img, x, y, label):
@@ -273,16 +276,18 @@ def drawSegmentedImage(img):
 
             if(not img[x][y] == 0):
                 # print(int(img[x][y]), colors[int(img[x][y])]) 
-                result[x][y] = colors[int(img[x][y])]
-            else:
-                result[x][y] = np.zeros(3)
+                result[x][y] = colors[int((img[x][y]))]
 
-            if(result[x][y][0] >= 255 and result[x][y][1] >= 255 and result[x][y][2] >= 255):
-                print("error, label:", img[x][y])
+            #if(result[x][y][0] >= 255 and result[x][y][1] >= 255 and result[x][y][2] >= 255):
+                #print("error, label:", img[x][y])
 
     return result
 
-
+def normalizeColors():
+    for y in range(len(colors)):
+        colors[y][0] /= 255
+        colors[y][1] /= 255
+        colors[y][2] /= 255
 
 histogram = getHistogram(imgCol)
 # cumulatedHistogram = getCumulatedHistogram(histogram)
@@ -299,18 +304,20 @@ histogram = getHistogram(imgCol)
 
 # showPicture("linearContrastSpread()", linearContrastSpread(imgCol, 30, 225))
 
-showPicture("Original, color: ", original)
+#showPicture("Original, color: ", original)
 
-showPicture("Original, BW: ", imgCol)
+#showPicture("Original, BW: ", imgCol)
 
 cardImage1 = binarize(imgCol, otsu_efficient(histogram))
-showPicture("binarize()", cardImage1)
+#showPicture("binarize()", cardImage1)
 
 kernel = np.ones((3,3), np.uint8)
 
 cardImage1 = cv2.erode(cardImage1, kernel, iterations=1)
 cardImage1 = cv2.dilate(cardImage1, kernel, iterations=1)
-showPicture("binarized, dilate, erode", cardImage1)
+#showPicture("binarized, dilate, erode", cardImage1)
+
+normalizeColors()
 
 segmentedImage = segmentation(cardImage1)
 
