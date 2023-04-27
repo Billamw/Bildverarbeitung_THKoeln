@@ -9,13 +9,13 @@ import argparse
 # print("Hell0 World!")
 
 # imgCol = cv2.cvtColor(cv2.imread('Utils/bookPage.png'), cv2.COLOR_BGR2GRAY)
-original = cv2.imread('Utils/SetGame.png')
+original = cv2.imread('Utils/IMG_1737.jpg')
 
-imgCol = cv2.cvtColor(cv2.imread('Utils/SetGame.png'), cv2.COLOR_BGR2GRAY)
+imgCol = cv2.cvtColor(cv2.imread('Utils/Beispiel_Tilman2.jpg' ), cv2.COLOR_BGR2GRAY)
 
 width, height = imgCol.shape
 
-scale_percent = 30 # percent of original size
+scale_percent = 15 # percent of original size
 width = int(imgCol.shape[1] * scale_percent / 100)
 height = int(imgCol.shape[0] * scale_percent / 100)
 dim = (width, height)
@@ -134,6 +134,7 @@ def binarize(imgCol, t):
                 result[x][y] = 1
             else:
                 result[x][y] = 0
+    
     return result
 
 def automizedBinarize(imgCol, cumulatedHistogram):
@@ -237,7 +238,6 @@ def segmentation(img):
                 
                 result = floodFill(img, x, y, label)
                 label+=1
-                print(label, "\t:", colors[label])
 
     print(label)
     return result
@@ -276,7 +276,7 @@ def drawSegmentedImage(img):
 
             if(not img[x][y] == 0):
                 # print(int(img[x][y]), colors[int(img[x][y])]) 
-                result[x][y] = colors[int((img[x][y]))]
+                result[x][y] = colors[int((img[x][y])%(len(colors)-1))]
 
             #if(result[x][y][0] >= 255 and result[x][y][1] >= 255 and result[x][y][2] >= 255):
                 #print("error, label:", img[x][y])
@@ -288,6 +288,13 @@ def normalizeColors():
         colors[y][0] /= 255
         colors[y][1] /= 255
         colors[y][2] /= 255
+
+def findContours(img):
+    # ret, thresh = cv2.threshold(img, 127, 255, 0)
+    # contours = np.array(())
+    contours, hierarchy = cv2.findContours(img, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+    return contours
 
 histogram = getHistogram(imgCol)
 # cumulatedHistogram = getCumulatedHistogram(histogram)
@@ -302,11 +309,15 @@ histogram = getHistogram(imgCol)
 # plt.plot(cumulatedHistogram)
 # plt.show()
 
-# showPicture("linearContrastSpread()", linearContrastSpread(imgCol, 30, 225))
+#contrast = linearContrastSpread(imgCol, 30, 225)
+
+#showPicture("linearContrastSpread()", contrast)
 
 #showPicture("Original, color: ", original)
 
 #showPicture("Original, BW: ", imgCol)
+
+# showPicture("contours: ", findContours(imgCol))
 
 cardImage1 = binarize(imgCol, otsu_efficient(histogram))
 #showPicture("binarize()", cardImage1)
@@ -314,14 +325,18 @@ cardImage1 = binarize(imgCol, otsu_efficient(histogram))
 kernel = np.ones((3,3), np.uint8)
 
 cardImage1 = cv2.erode(cardImage1, kernel, iterations=1)
-cardImage1 = cv2.dilate(cardImage1, kernel, iterations=1)
+#cardImage1 = cv2.dilate(cardImage1, kernel, iterations=1)
 #showPicture("binarized, dilate, erode", cardImage1)
 
-normalizeColors()
+#normalizeColors()
 
-segmentedImage = segmentation(cardImage1)
+#segmentedImage = segmentation(cardImage1)
 
-showPicture("Segmentation: ", drawSegmentedImage(segmentedImage))
+# showPicture("contours: ", findContours(segmentedImage))
+
+contours = findContours(cardImage1)
+
+cv2.drawContours(cardImage1, contours, -1, (0,255,0), 3)
 
 # showPicture("automzedBinarize()", automizedBinarize(imgCol, cumulatedHistogram))
 
