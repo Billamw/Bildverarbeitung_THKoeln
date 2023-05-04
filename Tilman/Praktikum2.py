@@ -334,9 +334,14 @@ cardImage1 = cv2.erode(cardImage1, kernel, iterations=1)
 
 # showPicture("contours: ", findContours(segmentedImage))
 
-contours = findContours(cardImage1)
+#contours = findContours(cardImage1)
 
-cv2.drawContours(cardImage1, contours, -1, (0,255,0), 3)
+ret, thresh = cv2.threshold(imgCol, 127, 255, 0)
+contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+test = cv2.drawContours(imgCol, contours, -1, (255,255,255), 3)
+
+showPicture("test", test)
 
 # showPicture("automzedBinarize()", automizedBinarize(imgCol, cumulatedHistogram))
 
