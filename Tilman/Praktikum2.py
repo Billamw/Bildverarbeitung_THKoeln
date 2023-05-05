@@ -65,6 +65,13 @@ def showPicture(name, img):
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
+def scalePicture(imgCol, scale_percent):
+    width = int(imgCol.shape[1] * scale_percent / 100)
+    height = int(imgCol.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    imgCol = cv2.resize(imgCol, dim, interpolation = cv2.INTER_AREA)
+    return imgCol
+
 def getHistogram(imgCol):
 
     width, height = imgCol.shape
@@ -296,6 +303,27 @@ def findContours(img):
 
     return contours
 
+def gaussianBlur(img):
+    img = cv2.GaussianBlur(img, (5,5), 1, 1)
+    return img
+
+def laplace(img):
+    return cv2.Laplacian(img, -1, delta=127)
+
+def cannyEdge(img):
+    return cv2.Canny(img, 100, 100, apertureSize=3)
+
+def edgeSharpening(image, w):
+    laplaceImg = laplace(image)
+    width, height = img.shape
+    gauss = gaussianBlur(image)
+
+    toRet = np.zeros((width, height))
+
+    toRet = np.uint8(np.clip(((1 + w) * image) - (gauss * w), 0, 255))
+
+    return toRet
+
 histogram = getHistogram(imgCol)
 # cumulatedHistogram = getCumulatedHistogram(histogram)
 # meanGreyValue = getMeanGreyValue(cumulatedHistogram, histogram*width*height)
@@ -319,12 +347,12 @@ histogram = getHistogram(imgCol)
 
 # showPicture("contours: ", findContours(imgCol))
 
-cardImage1 = binarize(imgCol, otsu_efficient(histogram))
-#showPicture("binarize()", cardImage1)
+# cardImage1 = binarize(imgCol, otsu_efficient(histogram))
+# #showPicture("binarize()", cardImage1)
 
-kernel = np.ones((3,3), np.uint8)
+# kernel = np.ones((3,3), np.uint8)
 
-cardImage1 = cv2.erode(cardImage1, kernel, iterations=1)
+# cardImage1 = cv2.erode(cardImage1, kernel, iterations=1)
 #cardImage1 = cv2.dilate(cardImage1, kernel, iterations=1)
 #showPicture("binarized, dilate, erode", cardImage1)
 
@@ -336,12 +364,27 @@ cardImage1 = cv2.erode(cardImage1, kernel, iterations=1)
 
 #contours = findContours(cardImage1)
 
-ret, thresh = cv2.threshold(imgCol, 127, 255, 0)
-contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+# ret, thresh = cv2.threshold(imgCol, 127, 255, 0)
+# contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
-test = cv2.drawContours(imgCol, contours, -1, (255,255,255), 3)
+# test = cv2.drawContours(imgCol, contours, -1, (255,255,255), 3)
 
-showPicture("test", test)
+img = cv2.cvtColor(cv2.imread('Utils/Ferrari_2004.jpg' ), cv2.COLOR_BGR2GRAY)
+img = scalePicture(img, 30)
+
+# showPicture("img", img)
+
+# showPicture("pls?", gaussianBlur(img))
+
+# showPicture("test", edgeSharpening(img, 0.4))
+
+cv2.imshow("adf", img)
+cv2.imshow("adagf", edgeSharpening(img, .5))
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+showPicture("test", cannyEdge(img))
 
 # showPicture("automzedBinarize()", automizedBinarize(imgCol, cumulatedHistogram))
 
