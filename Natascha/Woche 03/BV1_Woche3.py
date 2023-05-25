@@ -1,7 +1,6 @@
 import cv2 as cv2
 import numpy as np
 import matplotlib.pyplot as plt
-import os
 
 def Binarization(image, threshhold):
     imgBin = np.zeros((image.shape[0], image.shape[1]))
