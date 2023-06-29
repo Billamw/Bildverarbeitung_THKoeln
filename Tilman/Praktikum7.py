@@ -23,23 +23,33 @@ def template_matching(image, template, res):
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
 
-    for i in range(50):
-        # print(i)
-        minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
-        xBegin = maxLoc[1] - 1
-        yBegin = maxLoc[0] - 1
+    if(res is None):
+        grey_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        grey_template = cv2.cvtColor(template, cv2.COLOR_BGR2GRAY)
 
-        xEnd = maxLoc[1] + template.shape[1] + 1
-        yEnd = maxLoc[0] + template.shape[0] + 1
+        res = cv2.matchTemplate(grey_image, grey_template, cv2.TM_CCOEFF_NORMED)
+        resNorm = cv2.normalize(res, None, 255, 0, cv2.NORM_MINMAX, cv2.CV_8UC1)
+        
+    minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
+    while(maxVal > 0.65):
+        print(maxVal)
+        
+        xBegin = maxLoc[0] - 1
+        yBegin = maxLoc[1] - 1
+
+        xEnd = maxLoc[0] + template.shape[1] + 1
+        yEnd = maxLoc[1] + template.shape[0] + 1
 
         cv2.rectangle(image, (xBegin, yBegin), (xEnd, yEnd), color=(255,255,0))
 
-        neighbors = 4
+        neighbors = 22
         for j in range(neighbors):
             for j1 in range(neighbors):
                 if(maxLoc[1] + neighbors // 2 - j < res.shape[1] and int(maxLoc[0] + neighbors // 2 - j1) < res.shape[0]):
                     res[int(maxLoc[1] + neighbors // 2 - j)][int(maxLoc[0] + neighbors // 2 - j1)] = 0
-
+        res[maxLoc[1]][maxLoc[0]] = 0
+        
+        minVal, maxVal, minLoc, maxLoc = cv2.minMaxLoc(res)
 
     return image
 
@@ -73,9 +83,9 @@ image = cv2.imread('Utils/Uebung08/setGameNew.jpg')
 template = cv2.imread('Utils/Uebung08/TemplateWelle.png')
 
 image = scale(image, 15)
-template = scale(template, 15)
+template = scale(template, 23)
 
-for idxScale, scale in enumerate((0.5, 0.6, 0.7, 0.8)):
+for idxScale, scale in enumerate((1.0, 1.2, 1.4)):
     templateCurrentScale = cv2.resize(template, (int(template.shape[1] * scale), int(template.shape[0] * scale)))
     
     for idxRot, rotation in enumerate(range(0, 350, 15)):
@@ -90,14 +100,9 @@ for idxScale, scale in enumerate((0.5, 0.6, 0.7, 0.8)):
         
 print( f"allResults: {len(allResults)} x {len(allResults[0])}" )
 
-cv2.imshow("geht das?", template_matching(image, template, allResults[2][2]))
+cv2.imshow("ICH KANN NICHT MEHR; ICH WILL NICHT MEHR", template_matching(image, template, allResults[0][0]))
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
 # Führe das Template Matching durch
-result_image = template_matching(image, template)
-
-# Zeige das Ergebnisbild
-cv2.imshow('Template Matching', result_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+#result_image = template_matching(image, template, res=None)
