@@ -6,13 +6,14 @@ def linearContrastStretch(q, amin, amax, image):
     output = np.zeros_like(gray_image)
     height, width = gray_image.shape
 
-    cumhistogram = np.cumsum(np.histogram(gray_image))
+    histogram, bins = np.histogram(gray_image, bins=256, range=(0, 256))
+    cummulative_histogram = np.cumsum(histogram)
     t0 = 0
     t1 = 255
-    for a in range(len(cumhistogram)):
-        if 255*q > cumhistogram[a]:
+    for a in range(len(cummulative_histogram)):
+        if 255*q > cummulative_histogram[a]:
             t0 = a
-        if (255 - 255*q) < cumhistogram[a]:
+        if (255 - 255*q) < cummulative_histogram[a]:
             t1 = a
 
     for x in range(width):
